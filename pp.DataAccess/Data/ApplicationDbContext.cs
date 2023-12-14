@@ -6,7 +6,7 @@ using pp.Models;
 namespace pp.DataAccess.Data
 {
     //class ApplicationDbContext will be inheriting DbContext from EF core
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,6 +21,7 @@ namespace pp.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Category>().HasData(
                 new Category { Id = 1, CategoryName = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, CategoryName = "Drama", DisplayOrder = 2 },
