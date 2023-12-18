@@ -15,8 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>
 
 builder.Services.AddDefaultIdentity<IdentityUser>().AddEntityFrameworkStores<ApplicationDbContext>();
 
-
-
+builder.Services.AddRazorPages();   //for razor pages 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
@@ -35,7 +34,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();  // for validation login details as per roles
 app.UseAuthorization();
-
+app.MapRazorPages();    //mapping of razor pages
 app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
