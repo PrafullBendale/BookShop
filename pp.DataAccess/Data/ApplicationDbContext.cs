@@ -6,7 +6,7 @@ using pp.Models;
 namespace pp.DataAccess.Data
 {
     //class ApplicationDbContext will be inheriting DbContext from EF core
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
