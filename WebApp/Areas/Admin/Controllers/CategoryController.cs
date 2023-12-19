@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using pp.DataAccess.Data;
 using pp.DataAccess.Repository.IRepository;
 using pp.Models;
+using pp.Utility;
 
 
 namespace WebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =SD.Role_Admin)] //without authorization user can access admin pages using url
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _UnitOfWork;

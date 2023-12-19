@@ -16,7 +16,7 @@ namespace pp.DataAccess.Data
         //public DbSet<Model name for table creation> Table name required in databaase { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
-
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         //seeding categories table
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

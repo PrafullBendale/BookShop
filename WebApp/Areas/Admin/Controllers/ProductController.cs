@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using pp.DataAccess.Data;
 using pp.DataAccess.Repository.IRepository;
 using pp.Models;
 using pp.Models.ViewModels;
+using pp.Utility;
 
 namespace WebApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)] //without authorization user can access admin pages using url
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _UnitOfWork;
