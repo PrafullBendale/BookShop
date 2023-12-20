@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using pp.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using pp.DataAccess.Data;
 namespace pp.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220100702_addCompanyTable")]
+    partial class addCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,38 +303,6 @@ namespace pp.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Pune",
-                            Name = "techSol",
-                            PhoneNumber = "123456789",
-                            PostalCode = "123456",
-                            State = "MH",
-                            StreetAddress = "Dighi Road"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Pune",
-                            Name = "HorroHouse",
-                            PhoneNumber = "987456132",
-                            PostalCode = "789123",
-                            State = "MH",
-                            StreetAddress = "MG Road"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            City = "Mumbai",
-                            Name = "Funnies",
-                            PhoneNumber = "456123789",
-                            PostalCode = "456123",
-                            State = "MH",
-                            StreetAddress = "DC Road"
-                        });
                 });
 
             modelBuilder.Entity("pp.Models.Product", b =>
@@ -477,9 +448,6 @@ namespace pp.DataAccess.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -492,8 +460,6 @@ namespace pp.DataAccess.Migrations
 
                     b.Property<string>("StreetAddtress")
                         .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -558,15 +524,6 @@ namespace pp.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("pp.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("pp.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

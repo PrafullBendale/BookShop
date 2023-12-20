@@ -16,6 +16,8 @@ namespace pp.DataAccess.Data
         //public DbSet<Model name for table creation> Table name required in databaase { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         //seeding categories table
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +28,12 @@ namespace pp.DataAccess.Data
                 new Category { Id = 1, CategoryName = "Action", DisplayOrder = 1 },
                 new Category { Id = 2, CategoryName = "Drama", DisplayOrder = 2 },
                 new Category { Id = 3, CategoryName = "Horror", DisplayOrder = 3 }
+                );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company { Id = 1, Name = "techSol",StreetAddress="Dighi Road", City="Pune", PostalCode = "123456", State ="MH", PhoneNumber="123456789" },
+                new Company { Id = 2, Name = "HorroHouse", StreetAddress = "MG Road", City = "Pune", PostalCode = "789123", State = "MH", PhoneNumber = "987456132" },
+                new Company { Id = 3, Name = "Funnies", StreetAddress = "DC Road", City = "Mumbai", PostalCode = "456123", State = "MH", PhoneNumber = "456123789" }
                 );
 
             modelBuilder.Entity<Product>().HasData(
