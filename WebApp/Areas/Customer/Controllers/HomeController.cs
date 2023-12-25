@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using pp.Models;
 using pp.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebApp.Areas.Customer.Controllers
 {
@@ -24,10 +26,43 @@ namespace WebApp.Areas.Customer.Controllers
 
         public IActionResult Details(int productId)
         {
-            Product product = _unitOfWork.Product.Get(u=>u.Id == productId , includeProperties: "Category");
-            return View(product);
+            ShoppingCart Cart = new()
+            {
+                Product = _unitOfWork.Product.Get(u => u.Id == productId, includeProperties: "Category"),
+                Count = 1,
+                ProductId = productId
+            };
+            
+            return View(Cart);
         }
 
+        [HttpPost]
+        [Authorize]
+        public IActionResult Details(ShoppingCart shoppingCart)
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+            shoppingCart.ApplicationUserId = userId;
+
+            ShoppingCart cartFromDb =  _unitOfWork.ShoppingCart.Get(u => u.ApplicationUserId == userId && u.ProductId==shoppingCart.ProductId);
+
+
+            if (cartFromDb != null)
+            {
+                //cart already exists So update existing cart
+                cartFromDb.Count += shoppingCart.Count;
+                _unitOfWork.ShoppingCart.Update(cartFromDb);
+            }
+            else
+            {
+                //Add new cart
+                _unitOfWork.ShoppingCart.Add(shoppingCart);
+            }
+            TempData["success"] = "Cart updated Successfully..!!!";
+            _unitOfWork.Save();
+
+            return RedirectToAction("Index");
+        }
         public IActionResult Privacy()
         {
             return View();

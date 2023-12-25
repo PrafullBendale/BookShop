@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using pp.DataAccess.Data;
 using pp.DataAccess.Repository.IRepository;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace pp.DataAccess.Repository
 {
@@ -28,11 +29,20 @@ namespace pp.DataAccess.Repository
             dbSet.Add( entity);   
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        //bool tracked =false  because we do not auto update function fron EF core
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false) 
         {
-            IQueryable<T> query = dbSet;
-            query = query.Where(filter);
+            IQueryable<T> query;
+            if (tracked)
+            {
+                 query = dbSet;         
+            }
+            else
+            {
+                query = dbSet.AsNoTracking();  
+            }
 
+            query = query.Where(filter);
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeprop in includeProperties
@@ -41,14 +51,18 @@ namespace pp.DataAccess.Repository
                     query = query.Include(includeprop);
                 }
             }
-
             return query.FirstOrDefault();
+
         }
 
-        public IEnumerable<T> GetAll( string? includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
 
             IQueryable<T> query = dbSet;
+            if (filter!= null) 
+            {
+                query = query.Where(filter);
+            }
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeprop in includeProperties
