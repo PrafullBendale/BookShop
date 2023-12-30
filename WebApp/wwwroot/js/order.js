@@ -1,6 +1,7 @@
 ﻿var dataTable;
 $(document).ready(function () {
-    var status = window.location.search;
+     
+    var url = window.location.search;
     if (url.includes("inprocess")) {
         loadDataTable("inprocess");
     } else {
