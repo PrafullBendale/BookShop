@@ -17,5 +17,6 @@ namespace pp.DataAccess.Repository
         {
             _db = db;   
         }
-    }
+
+	}
 }

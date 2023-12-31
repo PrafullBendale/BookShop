@@ -88,7 +88,7 @@ namespace WebApp.Areas.Admin.Controllers
 
             orderHeader.TrackingNumber = OrderVM.OrderHeader.TrackingNumber;
             orderHeader.Carrier = OrderVM.OrderHeader.Carrier;
-            orderHeader.OrderStatus = OrderVM.OrderHeader.OrderStatus;
+            orderHeader.OrderStatus = SD.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
 
             if(orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
@@ -167,6 +167,7 @@ namespace WebApp.Areas.Admin.Controllers
                 };
                 options.LineItems.Add(sessionLineItem);
             }
+
             var service = new SessionService();
             Session session = service.Create(options);
             _unitOfWork.OrderHeader.UpdateStripePaymentId(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
@@ -182,7 +183,7 @@ namespace WebApp.Areas.Admin.Controllers
             OrderHeader orderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == orderHeaderId);
             if (orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment)
             {
-                //this order is by normal customer
+                //this order is by company
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SessionId);
                 if (session.PaymentStatus.ToLower() == "paid")

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using pp.DataAccess.Repository.IRepository;
 using pp.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using pp.Models.ViewModels;
 using pp.Utility;
 using Stripe.Checkout;
@@ -47,11 +48,11 @@ namespace WebApp.Areas.Customer.Controllers
 
             ShoppingCartVM = new()
             {
-                shoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product"),
+                shoppingCartList = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties:"Product"),
                 OrderHeader = new()
             };
 
-            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u=>u.Id== userId);
+            ShoppingCartVM.OrderHeader.ApplicationUser = _unitOfWork.ApplicationUser.Get(u=> u.Id == userId);
 
             ShoppingCartVM.OrderHeader.Name = ShoppingCartVM.OrderHeader.ApplicationUser.Name;
             ShoppingCartVM.OrderHeader.PhoneNumber = ShoppingCartVM.OrderHeader.ApplicationUser.PhoneNumber;
@@ -191,10 +192,12 @@ namespace WebApp.Areas.Customer.Controllers
         }
         public IActionResult Minus(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId, tracked: true);
             if (cartFromDb.Count <= 1)
             {
                 //remove from cart
+                HttpContext.Session.SetInt32(SD.SessionCart,
+                        _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
                 _unitOfWork.ShoppingCart.Remove(cartFromDb);
             }
             else
@@ -209,9 +212,14 @@ namespace WebApp.Areas.Customer.Controllers
 
         public IActionResult Remove(int cartId)
         {
-            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId);
+            var cartFromDb = _unitOfWork.ShoppingCart.Get(u => u.Id == cartId ,tracked:true);
+
+            HttpContext.Session.SetInt32(SD.SessionCart,
+                        _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count() - 1);
+
             _unitOfWork.ShoppingCart.Remove(cartFromDb);
             _unitOfWork.Save();
+            
             return RedirectToAction(nameof(Index));
         }
 
